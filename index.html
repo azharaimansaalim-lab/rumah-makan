@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rumah Makan Selera Nusantara</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background-color: #f8f9fa; padding: 20px; color: #333; }
+    header { background: #d9534f; color: white; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+    .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ddd; }
+    .btn { background: #d9534f; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-wa { background: #25d366; width: 100%; padding: 10px; margin-top: 10px; font-size: 1rem; }
+    .komentar { background: #eef2f5; padding: 10px; margin-top: 10px; border-radius: 5px; border-left: 4px solid #d9534f; }
+    .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Rumah Makan Selera Nusantara</h1>
+    <p>Menu Tradisional & Pemesanan Online</p>
+  </header>
+
+  <!-- SEKSI MENU -->
+  <div class="card">
+    <h2>Daftar Menu</h2>
+    
+    <div class="menu-item">
+      <span>Nasi Goreng Spesial - Rp 25.000</span>
+      <button class="btn" onclick="tambahKeKeranjang('Nasi Goreng Spesial', 25000)">+ Pilih</button>
+    </div>
+    
+    <div class="menu-item">
+      <span>Ayam Bakar Madu - Rp 30.000</span>
+      <button class="btn" onclick="tambahKeKeranjang('Ayam Bakar Madu', 30000)">+ Pilih</button>
+    </div>
+
+    <div class="menu-item">
+      <span>Soto Ayam Kampung - Rp 20.000</span>
+      <button class="btn" onclick="tambahKeKeranjang('Soto Ayam Kampung', 20000)">+ Pilih</button>
+    </div>
+
+    <div class="menu-item">
+      <span>Es Teh Manis - Rp 5.000</span>
+      <button class="btn" onclick="tambahKeKeranjang('Es Teh Manis', 5000)">+ Pilih</button>
+    </div>
+  </div>
+
+  <!-- SEKSI KERANJANG -->
+  <div class="card">
+    <h2>Keranjang Pesanan</h2>
+    <div id="daftarPesanan">
+      <p style="color:#888;">Belum ada menu yang dipilih.</p>
+    </div>
+    <hr style="margin: 10px 0;">
+    <h3>Total: Rp <span id="totalHarga">0</span></h3>
+    <button class="btn btn-wa" onclick="kirimKeWhatsApp()">Pesan via WhatsApp 💬</button>
+  </div>
+
+  <!-- SEKSI KOMENTAR -->
+  <div class="card">
+    <h2>Kritik & Saran</h2>
+    <form id="formKomentar">
+      <input type="text" id="nama" placeholder="Nama kamu" required style="padding: 8px; width: 100%; margin-bottom: 10px;"><br>
+      <textarea id="pesan" placeholder="Ketik masukan di sini..." required style="padding: 8px; width: 100%; margin-bottom: 10px;"></textarea><br>
+      <button type="submit" class="btn">Kirim Masukan</button>
+    </form>
+
+    <div id="daftarKomentar" style="margin-top: 15px;">
+      <p>Memuat komentar...</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT BERSIH -->
+  <script>
+    var keranjang = [];
+    var total = 0;
+
+    function tambahKeKeranjang(namaMenu, harga) {
+      keranjang.push({ nama: namaMenu, harga: harga });
+      total += harga;
+      updateKeranjang();
+    }
+
+    function updateKeranjang() {
+      var container = document.getElementById("daftarPesanan");
+      var totalElem = document.getElementById("totalHarga");
+
+      if (keranjang.length === 0) {
+        container.innerHTML = '<p style="color:#888;">Belum ada menu yang dipilih.</p>';
+      } else {
+        container.innerHTML = "";
+        keranjang.forEach(function(item, i) {
+          container.innerHTML += '<div>' + (i + 1) + '. ' + item.nama + ' - Rp ' + item.harga + '</div>';
+        });
+      }
+      totalElem.innerText = total;
+    }
+
+    function kirimKeWhatsApp() {
+      if (keranjang.length === 0) {
+        alert("Pilih menu dulu bro!");
+        return;
+      }
+
+      // Kirim pesanan ke Server Node.js
+      fetch('http://localhost:3000/api/pesanan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: keranjang, total: total })
+      }).catch(function(err) { console.log("Gagal catat di server", err); });
+
+      // Lanjut WA
+      var nomorWA = "6281910661683";
+      var teks = "Halo, saya mau pesan:\n";
+      keranjang.forEach(function(item, i) {
+        teks += (i + 1) + ". " + item.nama + " - Rp " + item.harga + "\n";
+      });
+      teks += "\nTotal: Rp " + total;
+
+      window.open('https://wa.me/' + nomorWA + '?text=' + encodeURIComponent(teks), '_blank');
+    }
+
+    function muatKomentar() {
+      fetch('http://localhost:3000/api/komentar')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var box = document.getElementById('daftarKomentar');
+          box.innerHTML = '';
+          data.forEach(function(item) {
+            box.innerHTML += '<div class="komentar"><strong>' + item.nama + ':</strong> ' + item.pesan + '</div>';
+          });
+        })
+        .catch(function(err) {
+          document.getElementById('daftarKomentar').innerHTML = '<p style="color:red;">Gagal terhubung ke server.</p>';
+        });
+    }
+
+    document.getElementById('formKomentar').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var namaVal = document.getElementById('nama').value;
+      var pesanVal = document.getElementById('pesan').value;
+
+      fetch('http://localhost:3000/api/komentar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama: namaVal, pesan: pesanVal })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        alert('Tersimpan di server!');
+        muatKomentar();
+        document.getElementById('nama').value = '';
+        document.getElementById('pesan').value = '';
+      });
+    });
+
+    window.onload = muatKomentar;
+  </script>
+
+</body>
+</html>

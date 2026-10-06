@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1791301392683,
+    "items": [
+      {
+        "nama": "Nasi Goreng Spesial",
+        "harga": 25000
+      }
+    ],
+    "total": 25000
+  },
+  {
+    "id": 1791301446777,
+    "items": [
+      {
+        "nama": "Nasi Goreng Spesial",
+        "harga": 25000
+      },
+      {
+        "nama": "Es Teh Manis",
+        "harga": 5000
+      },
+      {
+        "nama": "Ayam Bakar Madu",
+        "harga": 30000
+      }
+    ],
+    "total": 60000
+  },
+  {
+    "id": 1791301552932,
+    "items": [
+      {
+        "nama": "Nasi Goreng Spesial",
+        "harga": 25000
+      },
+      {
+        "nama": "Soto Ayam Kampung",
+        "harga": 20000
+      }
+    ],
+    "total": 45000
+  }
+]
