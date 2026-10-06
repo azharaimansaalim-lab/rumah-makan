@@ -6,7 +6,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Import Routes
+// Import Routes 
 const komentarRoute = require('./routes/komentar');
 const pesananRoute = require('./routes/pesanan');
 
