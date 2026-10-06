@@ -14,7 +14,7 @@ const pesananRoute = require('./routes/pesanan');
 app.use('/api/komentar', komentarRoute);
 app.use('/api/pesanan', pesananRoute);
 
-// Bagian ini WAJIB ada biar di CMD lokal tetep jalan:
+// ⚠️ BARIS INI YANG MEMBUAT SERVER TETAP JALAN DI LOKAL / CMD:
 app.listen(PORT, () => {
   console.log("==========================================");
   console.log(Server aktif di http://localhost:${PORT});
