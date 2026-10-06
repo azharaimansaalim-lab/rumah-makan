@@ -8,7 +8,7 @@ const filePath = path.join(__dirname, '../komentar.json');
 // Fungsi pembantu baca data
 function bacaData() {
   if (!fs.existsSync(filePath)) return [{ nama: "Budi", pesan: "Ayam bakarnya mantap!" }];
-  const data = fs.readFileSync(filePath, 'utf-8');
+  const data = fs.readFileSync(filePath, 'utf-8'); 
   return JSON.parse(data || '[]');
 }
 
