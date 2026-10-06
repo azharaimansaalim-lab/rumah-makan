@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -14,10 +14,11 @@ const pesananRoute = require('./routes/pesanan');
 app.use('/api/komentar', komentarRoute);
 app.use('/api/pesanan', pesananRoute);
 
-// Agar tetap bisa dites di laptop lokal (CMD)
+// Bagian ini WAJIB ada biar di CMD lokal tetep jalan:
 app.listen(PORT, () => {
+  console.log("==========================================");
   console.log(Server aktif di http://localhost:${PORT});
+  console.log("==========================================");
 });
 
-// Export untuk Vercel
 module.exports = app;
